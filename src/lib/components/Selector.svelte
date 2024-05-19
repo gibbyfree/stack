@@ -12,7 +12,6 @@
 <div>
     {#if selectedPiece}
         <div class="piece-container">
-            <p>Selected Piece: {selectedPiece.type}</p>
             <Piece piece={selectedPiece}/>
         </div>
     {/if}
@@ -20,9 +19,11 @@
 
 <style>
     div {
-        margin: 10px 0;
+        margin: 10px;
     }
     .piece-container {
+        display: flex;
+        align-self: center;
         position: relative;
     }
 </style>
