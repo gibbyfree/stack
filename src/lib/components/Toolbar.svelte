@@ -1,12 +1,19 @@
-<script>
-  import { pieces } from "../index";
+<script lang="ts">
+  import type { Piece } from "../types";
+  import { pieceConfig } from "../index";
   import { createEventDispatcher } from "svelte";
-  export let mode, selectPiece;
+  export let mode;
+
+  const dispatch = createEventDispatcher();
+
+  function selectPiece(piece: Piece) {
+    dispatch("update", piece);
+  }
 </script>
 
 {#if mode === "manual"}
   <div class="button-container">
-    {#each $pieces as piece}
+    {#each pieceConfig as piece}
       <button on:click={() => selectPiece(piece)}>{piece.type}</button>
     {/each}
   </div>

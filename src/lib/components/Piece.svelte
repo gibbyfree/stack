@@ -1,11 +1,13 @@
-<script>
-    export let piece;
+<script lang="ts">
+    import type { Piece } from "../types.ts";
+
+    export let selectedPiece;
 </script>
 
-<div class="piece" style="top: {piece.y}px; left: {piece.x}px;">
-    {#each piece.shape as row}
+<div class="piece">
+    {#each selectedPiece.shape as row}
         {#each row as cell}
-            <div class={cell ? 'cell active' : 'cell'}></div>
+            <div class={cell ? "cell active" : "cell"}></div>
         {/each}
     {/each}
 </div>

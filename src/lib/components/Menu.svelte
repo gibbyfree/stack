@@ -1,7 +1,7 @@
 <script>
     import { createEventDispatcher } from 'svelte';
 
-    let mode = "manual"; // or 'random'
+    export let mode = "manual"; // or 'random'
     const dispatch = createEventDispatcher();
 
     $: {

@@ -1,20 +1,16 @@
-<script>
+<script lang="ts">
     import { onMount } from "svelte";
-    import { pieces } from "../index";
-    import Piece from './Piece.svelte';
-    export let mode, selectedPiece;
+    import { pieceConfig } from "../index";
+    import Piece from "./Piece.svelte";
+    export let mode: String, selectedPiece: Piece;
 
-    onMount(() => {
-
-    });
+    // onMount(() => {});
 </script>
 
 <div>
-    {#if selectedPiece}
-        <div class="piece-container">
-            <Piece piece={selectedPiece}/>
-        </div>
-    {/if}
+    <div class="piece-container">
+        <Piece {selectedPiece} />
+    </div>
 </div>
 
 <style>

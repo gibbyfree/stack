@@ -1,18 +1,23 @@
-<script>
+<script lang="ts">
     import Grid from "../lib/components/Grid.svelte";
     import Toolbar from "../lib/components/Toolbar.svelte";
     import Selector from "../lib/components/Selector.svelte";
     import Menu from "$lib/components/Menu.svelte";
     let mode = "manual"; // or 'random'
 
-    let selectedPiece = null;
+    import type { Piece } from "../lib/types";
+    import { pieceConfig } from "../lib/index";
 
-    function selectPiece(piece) {
-        selectedPiece = piece;
-    }
+    // Random piece is initially selected
+    let selectedPiece: Piece =
+        pieceConfig[Math.floor(Math.random() * pieceConfig.length)];
 
-    const updateMode = (event) => {
-        mode = event.detail.mode;
+    const updateSelectedPiece = (event: CustomEvent<Piece>) => {
+        selectedPiece = event.detail;
+    };
+
+    const updateMode = (event: CustomEvent<string>) => {
+        mode = event.detail;
     };
 </script>
 
@@ -22,13 +27,18 @@
             <div class="selector">
                 <Selector {mode} {selectedPiece} />
             </div>
-            <div class="queue"><Toolbar {mode} {selectPiece} /></div>
+            <div class="queue">
+                <Toolbar
+                    {mode}
+                    on:update={updateSelectedPiece}
+                />
+            </div>
             <div class="menu">
                 <Menu bind:mode on:update={updateMode} />
             </div>
         </div>
         <div class="grid">
-            <Grid {mode} />
+            <Grid {mode} {selectedPiece} />
         </div>
     </div>
 </main>
