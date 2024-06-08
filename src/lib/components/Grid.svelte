@@ -2,38 +2,54 @@
     import { Filled, type Cell } from "$lib/types";
     import { pieceConfig } from "../index";
     import Piece from "./Piece.svelte";
-    import { onMount, tick } from "svelte";
+    import { onMount, onDestroy, tick } from "svelte";
 
     export let mode, selectedPiece;
 
+    // Initial grid state
     let grid = Array(20)
         .fill(null)
-        .map(() => Array(10).fill({ color: "white", filled: false }));
+        .map(() =>
+            Array(10).fill({
+                color: "white",
+                filled: false,
+            }),
+        );
+
+    let ghostPosition = { x: 3 };
 
     // Fill grid with ghost of selected piece
     $: if (selectedPiece) {
+
         // Clear the old ghost piece
         for (let i = 0; i < grid.length; i++) {
             for (let j = 0; j < grid[i].length; j++) {
                 if (grid[i][j].fill === Filled.GHOST) {
-                    grid[i][j] = { color: "white", fill: Filled.EMPTY };
+                    grid[i][j] = {
+                        color: "white",
+                        fill: Filled.EMPTY,
+                    };
                 }
             }
         }
 
-        const ghostPiece = { ...selectedPiece, color: "rgba(0, 0, 0, 0.5)" }; // Assuming the ghost piece is semi-transparent black
+        const ghostPiece = {
+            ...selectedPiece,
+            color: "rgba(0, 0, 0, 0.5)",
+        }; // ghost piece is semi-transparent black
 
-        // Calculate the starting position for the piece
-        const startRow = grid.length; // last row of the grid
-        const startCol =
-            Math.floor(grid[0].length / 2) -
-            Math.floor(ghostPiece.shape[0].length / 2); // middle of the grid
-
+        console.log(ghostPosition.x)
+        
+        const startRow = grid.length; // last row of the grid or ghost position
+        const startCol = ghostPosition.x;
         // Render the piece on the grid
         for (let i = ghostPiece.shape.length - 1; i >= 0; i--) {
             for (let j = 0; j < ghostPiece.shape[i].length; j++) {
                 if (ghostPiece.shape[i][j] === 1) {
-                    grid[startRow - i][startCol + j] = { color: ghostPiece.color, fill: Filled.GHOST };
+                    grid[startRow - i][startCol + j] = {
+                        color: ghostPiece.color,
+                        fill: Filled.GHOST,
+                    };
                 }
             }
         }
@@ -47,6 +63,33 @@
         gap: 2px;
         margin-top: 20px;
     `;
+
+    onMount(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            switch (event.key) {
+                case "ArrowLeft":
+                    // Move ghost left by 1
+                    ghostPosition.x -= 1
+                    break;
+                case "ArrowRight":
+                    ghostPosition.x += 1
+                    // move piece right
+                    break;
+                case "ArrowDown":
+                    // soft drop
+                    break;
+                case "ArrowUp":
+                    // hard drop
+                    break;
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+
+        onDestroy(() => {
+            window.removeEventListener("keydown", handleKeyDown);
+        });
+    });
 </script>
 
 <div style={gridStyle}>
@@ -64,6 +107,7 @@
     div {
         position: relative;
     }
+
     .cell {
         width: 30px;
         height: 30px;
